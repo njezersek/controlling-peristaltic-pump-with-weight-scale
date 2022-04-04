@@ -15,5 +15,8 @@ namespace display{
 	uint8_t print(const char *str, uint8_t x, uint8_t y);
 	uint8_t printNumberChar(uint8_t num, uint8_t x, uint8_t y);
 	uint8_t printNumber(uint16_t num, uint8_t x, uint8_t y);
+	void printHorizontalLine(uint8_t x, uint8_t y, uint8_t w);
+	void printSegment(uint8_t x, uint8_t y, bool vertical);
+	void print7Segment(uint8_t num, uint8_t x, uint8_t y);
 	void clear();
 }

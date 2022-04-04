@@ -14,8 +14,12 @@ void setup() {
 	for(uint8_t n = 0; n < 10; n++){
 		display::printNumberChar(n, n*6, 12);
 	}
+	// display::printNumber(9876, 127, 40);
 
-	display::printNumber(9876, 127, 40);
+	display::print7Segment(9, 0, 25);
+
+	// display::printHorizontalLine(1, 25, 3);
+
 }
 
 void loop() {
