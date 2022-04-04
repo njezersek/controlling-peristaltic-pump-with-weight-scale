@@ -10,3 +10,10 @@
 #define SID 3    	// RW
 #define SID_PORT PORTD
 #define SID_MASK 0b00000001
+
+
+// ROTARY ENCODER - KNOB
+#define ENCODER_A_PIN A4
+#define ENCODER_B_PIN A3
+#define BUTTON_PIN A2
+#define ENCODER_DIRECTION -1

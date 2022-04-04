@@ -1,10 +1,13 @@
 #include <Arduino.h>
 
 #include "display.h"
+#include "menu.h"
+#include "knob.h"
 
 void setup() {
 	pinMode(13, OUTPUT);
 	display::init();
+	knob::setup();
 
 	Serial.begin(9600);
 
@@ -18,16 +21,16 @@ void setup() {
 
 	display::print7Segment(9, 0, 25);
 
-	// display::printHorizontalLine(1, 25, 3);
-
+	// display::horizontalLine(1, 25, 3);
 }
 
 void loop() {
+	menu::render();
 	delayMicroseconds(72);
 	unsigned long start = micros();
 	for(uint8_t r = 0; r < 32; r++){ // rows
 		display::setGRAMpointer(0, r);
-		delayMicroseconds(10);
+		knob::update();
 		for(uint8_t c=0; c<32; c++){ // columns
 
 			// map LCD to Buffer
@@ -47,6 +50,5 @@ void loop() {
 		}
 	}
 	unsigned long end = micros();
-	Serial.print("time: ");
-	Serial.println(end - start);
+	Serial.println(menu::selected_item);
 }

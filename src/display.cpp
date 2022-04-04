@@ -6,6 +6,9 @@
 // display buffer
 uint8_t display::data[1024];
 
+// draw mode
+uint8_t display::draw_mode = 2;
+
 // font 5x5 uppercase letters
 const PROGMEM uint8_t display::font5x5[] = {0x6e,0x99,0xfe,0x99,0x9e,0x6e,0x99,0x89,0x99,0x6e,0xee,0x88,0xcc,0x88,0xe8,0x69,0x89,0xff,0x99,0x69,0x82,0x82,0x82,0x8a,0x84,0x98,0xa8,0xc8,0xa8,0x9e,0x89,0xdd,0xab,0x89,0x89,0x6e,0x99,0x9e,0x98,0x68,0x6e,0x99,0x9e,0xa9,0x59,0x6e,0x84,0x44,0x24,0xc4,0x9a,0x9a,0x9a,0x9a,0xf4,0x89,0x89,0xa6,0xd9,0x89,0x9f,0x92,0x64,0x28,0x4f};
 const PROGMEM uint8_t display::width_font5x5[] = {0xff,0xaf,0x2e,0x7f,0xfa,0xe7,0xf0};
@@ -133,10 +136,10 @@ uint8_t display::printChar(char c, uint8_t x, uint8_t y) {
 	for(uint8_t row = 0; row < 5; row++) {
 		// uint8_t data = pgm_read_byte(&font5x4[(c - 32) * 5 + row]);
 		uint8_t row_data = ((pgm_read_byte(&font5x5[i/2 * 5 + row]) << (i%2 * 4)) & 0xf0);
-		data[b + (y+row) * 16] |= row_data >> byte_offset;
+		data[b + (y+row) * 16] ^= row_data >> byte_offset;
 
 		if(byte_offset + width > 8) {
-			data[b+1 + (y+row) * 16] |= row_data << (8 - byte_offset);
+			data[b+1 + (y+row) * 16] ^= row_data << (8 - byte_offset);
 		}
 	}
 	if(add_I) printChar('I', x+width, y);
@@ -161,10 +164,10 @@ uint8_t display::printNumberChar(uint8_t num, uint8_t x, uint8_t y) {
 
 	for(uint8_t row = 0; row < 11; row++) {
 		uint8_t row_data = pgm_read_byte(&font5x11_n[i * 11 + row]);
-		data[b + (y+row) * 16] |= row_data >> byte_offset;
+		data[b + (y+row) * 16] ^= row_data >> byte_offset;
 
 		if(byte_offset + width > 8) {
-			data[b+1 + (y+row) * 16] |= row_data << (8 - byte_offset);
+			data[b+1 + (y+row) * 16] ^= row_data << (8 - byte_offset);
 		}
 	}
 
@@ -174,6 +177,9 @@ uint8_t display::printNumberChar(uint8_t num, uint8_t x, uint8_t y) {
 uint8_t display::printNumber(uint16_t num, uint8_t x, uint8_t y) {
 	uint8_t width = 0;
 	x -= 5;
+	if(num == 0){
+		width -= printNumberChar(0, x + width, y) + 1;
+	}
 	while(num) {
 		width -= printNumberChar(num % 10, x + width, y) + 1;
 		num /= 10;
@@ -181,7 +187,7 @@ uint8_t display::printNumber(uint16_t num, uint8_t x, uint8_t y) {
 	return width;
 }
 
-void display::printHorizontalLine(uint8_t x, uint8_t y, uint8_t w){
+void display::horizontalLine(uint8_t x, uint8_t y, uint8_t w){
 	uint8_t start = x/8;
 	uint8_t end = (x+w)/8;
 	for(uint8_t i = start; i <= end; i++){
@@ -192,34 +198,79 @@ void display::printHorizontalLine(uint8_t x, uint8_t y, uint8_t w){
 		if(i == end){
 			mask &= 0xff << (8 - (x+w) % 8);
 		}
-		data[i + y * 16] |= mask;
+		if(draw_mode == 0){
+			data[i + y * 16] &= ~mask;
+		}
+		else if(draw_mode == 1){
+			data[i + y * 16] |= mask;
+		}
+		else if(draw_mode == 2){
+			data[i + y * 16] ^= mask;
+		}
+	}
+}
+
+void display::verticalLine(uint8_t x, uint8_t y, uint8_t h){
+	uint8_t mask = 0x80 >> (x % 8);
+	for(uint8_t i = y; i < y+h; i++){
+		if(draw_mode == 0){
+			data[x/8 + i * 16] &= ~mask;
+		}
+		else if(draw_mode == 1){
+			data[x/8 + i * 16] |= mask;
+		}
+		else if(draw_mode == 2){
+			data[x/8 + i * 16] ^= mask;
+		}
+	}
+}
+
+void display::rectangle(uint8_t x, uint8_t y, uint8_t w, uint8_t h){
+	for(uint8_t i = 0; i < h; i++){
+		horizontalLine(x, y+i, w);
 	}
 }
 
 void display::printSegment(uint8_t x, uint8_t y, bool vertical){
 	if(vertical){
-		printHorizontalLine(x+1, y, 1);
+		horizontalLine(x+1, y, 1);
 		for(uint8_t i = 1; i < 12; i++){
-			printHorizontalLine(x, y+i, 3);
+			horizontalLine(x, y+i, 3);
 		}
-		printHorizontalLine(x+1, y+12, 1);
+		horizontalLine(x+1, y+12, 1);
 	}
 	else{
-		printHorizontalLine(x+1, y, 11);
-		printHorizontalLine(x, y+1, 13);
-		printHorizontalLine(x+1, y+2, 11);
+		horizontalLine(x+1, y, 11);
+		horizontalLine(x, y+1, 13);
+		horizontalLine(x+1, y+2, 11);
+	}
+}
+
+void display::cursor(uint8_t x, uint8_t y, bool vertical){
+	if(vertical){
+		horizontalLine(x-3, y-2, 1);
+		horizontalLine(x-3, y-1, 2);
+		horizontalLine(x-3, y, 3);
+		horizontalLine(x-3, y+1, 2);
+		horizontalLine(x-3, y+2, 1);
+
+	}
+	else{
+		horizontalLine(x-2, y-2, 5);
+		horizontalLine(x-1, y-1, 3);
+		horizontalLine(x, y, 1);
 	}
 }
 
 void display::print7Segment(uint8_t num, uint8_t x, uint8_t y){
 	uint8_t conf = pgm_read_byte(&seven_segment[num]);
-	if(conf & 0b1) display::printSegment(2, 25, false); // A
-	if(conf & 0b10) display::printSegment(14, 25+2, true); // B
-	if(conf & 0b100) display::printSegment(14, 25+2+14, true); // C
-	if(conf & 0b1000) display::printSegment(2, 25+14+14, false); // D
-	if(conf & 0b10000) display::printSegment(0, 25+2+14, true); // E
-	if(conf & 0b100000) display::printSegment(0, 25+2, true); // F
-	if(conf & 0b1000000) display::printSegment(2, 25+14, false); // G
+	if(conf & 0b1) display::printSegment(x+2, y, false); // A
+	if(conf & 0b10) display::printSegment(x+14, y+2, true); // B
+	if(conf & 0b100) display::printSegment(x+14, y+2+14, true); // C
+	if(conf & 0b1000) display::printSegment(x+2, y+14+14, false); // D
+	if(conf & 0b10000) display::printSegment(x+0, y+2+14, true); // E
+	if(conf & 0b100000) display::printSegment(x+0, y+2, true); // F
+	if(conf & 0b1000000) display::printSegment(x+2, y+14, false); // G
 }
 
 void display::clear(){
