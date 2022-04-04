@@ -34,7 +34,7 @@ void menu::onKnobRotate(int direction){
 	}
 	else{
 		uint8_t d = direction / abs(direction);
-		selected_item = (selected_item + direction + 4) % 4;
+		selected_item = (selected_item + d + 4) % 4;
 	}
 }
 
@@ -93,4 +93,8 @@ void menu::renderMain(){
 	display::printNumber(speed, ITEM_W*1 - 8, SETTINGS_Y+10);
 	display::printNumber(weight, ITEM_W*2 - 8, SETTINGS_Y+10);
 	display::printNumber(drip, ITEM_W*3 - 8, SETTINGS_Y+10);
+
+	// settings icon
+	display::printBitmap(display::settings_icon, 6+speed, 0, 18, 9, false); // 45, 106
+	display::printBitmap(display::settings_icon, 6+speed, +9, 18, 9, true); // 45, 106
 }

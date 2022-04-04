@@ -6,6 +6,7 @@ namespace display{
 	extern const uint8_t font5x5[];
 	extern const uint8_t width_font5x5[];
 	extern const uint8_t font5x11_n[];
+	extern const uint8_t settings_icon[];
 	extern uint8_t draw_mode; // 0: AND, 1: OR, 2: XOR 
 
 	void init();
@@ -22,5 +23,6 @@ namespace display{
 	void printSegment(uint8_t x, uint8_t y, bool vertical);
 	void print7Segment(uint8_t num, uint8_t x, uint8_t y);
 	void cursor(uint8_t x, uint8_t y, bool vertical);
+	void printBitmap(const uint8_t *bitmap, uint8_t x, uint8_t y, uint8_t w, uint8_t h, bool reverse);
 	void clear();
 }
