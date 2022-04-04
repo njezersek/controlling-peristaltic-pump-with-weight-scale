@@ -7,6 +7,9 @@ namespace display{
 	extern const uint8_t width_font5x5[];
 	extern const uint8_t font5x11_n[];
 	extern const uint8_t settings_icon[];
+	extern const uint8_t gram_icon[];
+	extern const uint8_t small_gram_icon[];
+	extern const uint8_t small_percent_icon[];
 	extern uint8_t draw_mode; // 0: AND, 1: OR, 2: XOR 
 
 	void init();

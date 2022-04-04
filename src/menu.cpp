@@ -9,7 +9,9 @@ int16_t menu::weight = 0;
 int8_t menu::drip = 0;
 
 void menu::onButtonPress(){
-	selected = !selected;
+	if(selected_item < 3){
+		selected = !selected;
+	}
 }
 
 void menu::onKnobRotate(int direction){
@@ -60,6 +62,15 @@ void menu::renderMain(){
 	display::print7Segment(selected_item, 43+19*2, 3);
 	display::print7Segment(selected_item, 43+19*3, 3);
 
+	// gram icon
+	display::printBitmap(display::gram_icon, 119, 26, 7, 12, false);
+
+	// filling indicator
+	display::print("FILLING", 8, 9);
+	display::printNumber(123, 26, 17);
+	display::printChar('S', 28, 23);
+
+
 	// settings box
 	display::horizontalLine(0, SETTINGS_Y, 128);
 	display::verticalLine(0, SETTINGS_Y, SETTINGS_H);
@@ -72,9 +83,6 @@ void menu::renderMain(){
 	if(selected){
 		if(selected_item < 3){
 			display::rectangle(ITEM_W*selected_item+1, SETTINGS_Y+1, ITEM_W-1, SETTINGS_H-1);
-		}
-		else{
-			display::rectangle(ITEM_W*selected_item+1, SETTINGS_Y+1, 24, SETTINGS_H-1);
 		}
 	}
 
@@ -93,8 +101,13 @@ void menu::renderMain(){
 	display::printNumber(speed, ITEM_W*1 - 8, SETTINGS_Y+10);
 	display::printNumber(weight, ITEM_W*2 - 8, SETTINGS_Y+10);
 	display::printNumber(drip, ITEM_W*3 - 8, SETTINGS_Y+10);
+	// setting item icons
+	display::printBitmap(display::small_percent_icon, ITEM_W*1 - 8 + 1, SETTINGS_Y+13, 6, 8, false);
+	display::printBitmap(display::small_gram_icon, ITEM_W*2 - 8 + 1, SETTINGS_Y+13, 6, 8, false);
+	display::printBitmap(display::small_gram_icon, ITEM_W*3 - 8 + 1, SETTINGS_Y+13, 6, 8, false);
+
 
 	// settings icon
-	display::printBitmap(display::settings_icon, 6+speed, 0, 18, 9, false); // 45, 106
-	display::printBitmap(display::settings_icon, 6+speed, +9, 18, 9, true); // 45, 106
+	display::printBitmap(display::settings_icon, 106, SETTINGS_Y+3, 18, 9, false);
+	display::printBitmap(display::settings_icon, 106, SETTINGS_Y+3+9, 18, 9, true);
 }
