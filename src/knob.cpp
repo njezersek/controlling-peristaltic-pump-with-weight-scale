@@ -5,6 +5,7 @@ DebounceInput encoder_A(ENCODER_A_PIN);
 DebounceInput encoder_B(ENCODER_B_PIN);
 DebounceInput button(BUTTON_PIN);
 unsigned long last_encoder_update = 0;
+int8_t prev_dir = 1;
 
 void knob::setup(){
 	encoder_A.setup();
@@ -19,21 +20,15 @@ void knob::update(){
 
 	unsigned long now = millis();
 	if(encoder_A.state && !encoder_A.last_state){
-		int multiplier = 1;
-		if(now - last_encoder_update < 25){
-			multiplier = 20;
-		}
-		else if(now - last_encoder_update < 50){
-			multiplier = 10;
-		}
+		int8_t dir = (encoder_B.state) ? 1 : -1;
+
+		int8_t multiplier = min(max(1000 / (now - last_encoder_update), 1), 50);
 		last_encoder_update = now;
 
-		if(encoder_B.state){
-			menu::onKnobRotate(1 * multiplier * ENCODER_DIRECTION);
-		}
-		else{
-			menu::onKnobRotate(-1 * multiplier * ENCODER_DIRECTION);
-		}
+		if(prev_dir != dir) multiplier = 1;
+
+		prev_dir = dir;
+		menu::onKnobRotate(dir * multiplier * ENCODER_DIRECTION);
 	}
 
 	if(button.state && !button.last_state){
