@@ -1,6 +1,7 @@
 #include "menu.h"
 #include "display.h"
 
+uint8_t menu::selected_menu = 0;
 uint8_t menu::selected_item = 0;
 bool menu::selected = false;
 
@@ -9,8 +10,16 @@ int16_t menu::weight = 0;
 int8_t menu::drip = 0;
 
 void menu::onButtonPress(){
-	if(selected_item < 3){
-		selected = !selected;
+	if(selected_menu == 0){
+		if(selected_item < 3){
+			selected = !selected;
+		}
+		else{
+			selected_menu = 1;
+		}
+	}
+	else if(selected_menu == 1){
+		selected_menu = 0;
 	}
 }
 
@@ -45,7 +54,12 @@ void menu::onKnobRotate(int direction){
 #define ITEM_W 34
 
 void menu::render(){
-	renderMain();
+	if(selected_menu == 0){
+		renderMain();
+	}
+	else {
+		renderSettings();
+	}
 }
 
 
@@ -110,4 +124,14 @@ void menu::renderMain(){
 	// settings icon
 	display::printBitmap(display::settings_icon, 106, SETTINGS_Y+3, 18, 9, false);
 	display::printBitmap(display::settings_icon, 106, SETTINGS_Y+3+9, 18, 9, true);
+}
+
+void menu::renderSettings(){
+	display::clear();
+	display::draw_mode = 2;
+
+	display::print("SETTINGS", 3, 1);
+	display::horizontalLine(0, 7, 128);
+	display::verticalLine(0, 0, 8);
+	display::verticalLine(127, 0, 8);
 }

@@ -2,6 +2,7 @@
 #include <Arduino.h>
 
 namespace menu{
+	extern uint8_t selected_menu;
 	extern uint8_t selected_item;
 	extern bool selected;
 
@@ -13,4 +14,5 @@ namespace menu{
 	void onButtonPress();
 	void render();
 	void renderMain();
+	void renderSettings();
 }
