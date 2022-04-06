@@ -1,5 +1,6 @@
 #include "menu.h"
 #include "display.h"
+#include "scale.h"
 
 uint8_t menu::selected_menu = 0;
 uint8_t menu::selected_item = 0;
@@ -71,10 +72,18 @@ void menu::renderMain(){
 	display::draw_mode = 2;
 
 	// weight display
-	display::print7Segment(selected_item, 43, 3);
-	display::print7Segment(selected_item, 43+19, 3);
-	display::print7Segment(selected_item, 43+19*2, 3);
-	display::print7Segment(selected_item, 43+19*3, 3);
+	long w = abs(scale::weight_display);
+	uint8_t i;
+	for(i=0; i<4; i++){
+		display::print7Segment(w % 10, 43+19*(3-i), 3);
+		w /= 10;
+		if(w == 0) break;
+	}
+	if(scale::weight_display < 0){
+		display::horizontalLine(43+19*(3-i)-10, 17, 7);
+		display::horizontalLine(43+19*(3-i)-11, 18, 9);
+		display::horizontalLine(43+19*(3-i)-10, 19, 7);
+	}
 
 	// gram icon
 	display::printBitmap(display::gram_icon, 119, 26, 7, 12, false);
@@ -134,4 +143,7 @@ void menu::renderSettings(){
 	display::horizontalLine(0, 7, 128);
 	display::verticalLine(0, 0, 8);
 	display::verticalLine(127, 0, 8);
+
+	display::printNumber(scale::weight_display, 100, 50);
+	Serial.println(scale::weight_display);
 }

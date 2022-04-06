@@ -17,3 +17,8 @@
 #define ENCODER_B_PIN A3
 #define BUTTON_PIN A2
 #define ENCODER_DIRECTION -1
+
+// SCALE HX711
+#define SCALE_CLK_PIN 11
+#define SCALE_DT_PIN 12
+#define SCALE_GAIN 1 // 1: 128 channel A, 2: 32 channel B, 3: 64 channel A

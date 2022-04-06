@@ -3,6 +3,8 @@
 #include "display.h"
 #include "menu.h"
 #include "knob.h"
+#include "scale.h"
+
 
 void setup() {
 	pinMode(13, OUTPUT);
@@ -10,6 +12,8 @@ void setup() {
 	knob::setup();
 
 	Serial.begin(9600);
+
+	scale::init();
 
 	display::print("HELLO WORLD", 0, 0);
 	display::print("ABCDEFGHIJKLMNOPQRSTUVWZ", 0, 6);
@@ -25,12 +29,14 @@ void setup() {
 }
 
 void loop() {
-	menu::render();
-	delayMicroseconds(72);
 	unsigned long start = micros();
+	menu::render();
 	for(uint8_t r = 0; r < 32; r++){ // rows
 		display::setGRAMpointer(0, r);
 		knob::update();
+		if (scale::is_ready()) {
+			scale::update();
+		}
 		for(uint8_t c=0; c<32; c++){ // columns
 
 			// map LCD to Buffer
@@ -50,5 +56,5 @@ void loop() {
 		}
 	}
 	unsigned long end = micros();
-	Serial.println(menu::selected_item);
+	// Serial.println(end-start);
 }
