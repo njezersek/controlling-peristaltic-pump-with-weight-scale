@@ -17,36 +17,56 @@ void menu::onButtonPress(){
 		}
 		else{
 			selected_menu = 1;
+			selected_item = 0;
+			selected = false;
 		}
 	}
 	else if(selected_menu == 1){
-		selected_menu = 0;
+		if(selected_item < 4){
+			selected = !selected;
+		}
+		else{
+			selected_menu = 0;
+			selected_item = 3;
+			selected = false;
+		}
 	}
 }
 
 void menu::onKnobRotate(int direction){
-	if(selected){
-		switch(selected_item){
-			case 0:
-				speed += direction;
-				if(speed > 100)	speed = 100;
-				else if(speed < 0) speed = 0;
-				break;
-			case 1:
-				weight += direction;
-				if(weight > 1000)	weight = 1000;
-				else if(weight < 0) weight = 0;
-				break;
-			case 2:
-				drip += direction;
-				if(drip > 100)	drip = 100;
-				else if(drip < 0) drip = 0;
-				break;
+	if(selected_menu == 0){
+		if(selected){
+			switch(selected_item){
+				case 0:
+					speed += direction;
+					if(speed > 100)	speed = 100;
+					else if(speed < 0) speed = 0;
+					break;
+				case 1:
+					weight += direction;
+					if(weight > 1000)	weight = 1000;
+					else if(weight < 0) weight = 0;
+					break;
+				case 2:
+					drip += direction;
+					if(drip > 100)	drip = 100;
+					else if(drip < 0) drip = 0;
+					break;
+			}
+		}
+		else{
+			int8_t d = direction / abs(direction);
+			selected_item = (selected_item + d + 4) % 4;
 		}
 	}
-	else{
-		uint8_t d = direction / abs(direction);
-		selected_item = (selected_item + d + 4) % 4;
+	else if(selected_menu == 1){
+		if(selected){
+
+		}
+		else{
+			int8_t d = direction / abs(direction);
+			selected_item = (selected_item + d + 6) % 6;
+		}
 	}
 }
 
@@ -144,6 +164,43 @@ void menu::renderSettings(){
 	display::verticalLine(0, 0, 8);
 	display::verticalLine(127, 0, 8);
 
-	display::printNumber(scale::weight_display, 100, 50);
-	Serial.println(scale::weight_display);
+	// cancle
+	if(selected_item == 4){
+		display::rectangle(110, 0, 9, 7);
+	}
+	display::printBitmap(display::cancle_icon, 112, 1, 5, 5, false);
+
+	// confirm
+	if(selected_item == 5){
+		display::rectangle(118, 0, 9, 7);
+	}
+	display::printBitmap(display::confirm_icon, 120, 1, 6, 5, false);
+
+	// pointer
+	if(selected_item < 4){
+		display::horizontalLine(0, selected_item * 13 + 13, 1);
+		display::horizontalLine(0, selected_item * 13 + 13 + 1, 2);
+		display::horizontalLine(0, selected_item * 13 + 13 + 2, 3);
+		display::horizontalLine(0, selected_item * 13 + 13 + 3, 2);
+		display::horizontalLine(0, selected_item * 13 + 13 + 4, 1);
+
+		if(selected){
+			display::rectangle(0, selected_item * 13 + 13 - 4, 128, 13);
+		}
+	}
+
+	// settings text
+	display::print("STOPPING WEIGHT", 5, 13 + 13*0);
+	display::printNumber(1234, 119, 13 + 13*0 -3);
+	display::printBitmap(display::small_gram_icon, 120, 13 + 13*0, 4, 8, false);
+	display::print("START ACCELERATION", 5, 13 + 13*1);
+	display::printNumber(1234, 119, 13 + 13*1 -3);
+	display::printBitmap(display::small_percent_icon, 120, 13 + 13*1, 4, 8, false);
+	display::print("SOUND", 5, 13 + 13*2);
+	display::printBitmap(display::speaker_icon, 107, 13 + 13*2 - 2, 6, 9, false);
+	display::printBitmap(display::sound_icon, 114, 13 + 13*2 - 3, 5, 11, false);
+
+	display::print("CALIBRATION", 5, 13 + 13*3);
+	for(uint8_t i=0; i<4; i++){
+	}
 }

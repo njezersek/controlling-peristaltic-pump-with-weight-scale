@@ -10,6 +10,10 @@ namespace display{
 	extern const uint8_t gram_icon[];
 	extern const uint8_t small_gram_icon[];
 	extern const uint8_t small_percent_icon[];
+	extern const uint8_t cancle_icon[];
+	extern const uint8_t confirm_icon[];
+	extern const uint8_t speaker_icon[];
+	extern const uint8_t sound_icon[];
 	extern uint8_t draw_mode; // 0: AND, 1: OR, 2: XOR 
 
 	void init();
