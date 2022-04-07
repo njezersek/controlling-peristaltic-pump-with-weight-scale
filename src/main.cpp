@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 #include "display.h"
-#include "menu.h"
+#include "controller.h"
 #include "knob.h"
 #include "scale.h"
 
@@ -30,7 +30,7 @@ void setup() {
 
 void loop() {
 	unsigned long start = micros();
-	menu::render();
+	controller::render();
 	for(uint8_t r = 0; r < 32; r++){ // rows
 		display::setGRAMpointer(0, r);
 		knob::update();

@@ -1,5 +1,5 @@
 #include "knob.h"
-#include "menu.h"
+#include "controller.h"
 
 DebounceInput encoder_A(ENCODER_A_PIN);
 DebounceInput encoder_B(ENCODER_B_PIN);
@@ -28,10 +28,10 @@ void knob::update(){
 		if(prev_dir != dir) multiplier = 1;
 
 		prev_dir = dir;
-		menu::onKnobRotate(dir * multiplier * ENCODER_DIRECTION);
+		controller::onKnobRotate(dir * ENCODER_DIRECTION, multiplier);
 	}
 
 	if(button.state && !button.last_state){
-		menu::onButtonPress();
+		controller::onButtonPress();
 	}
 }
