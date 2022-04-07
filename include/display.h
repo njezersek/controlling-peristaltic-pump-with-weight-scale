@@ -15,6 +15,7 @@ namespace display{
 	extern const uint8_t speaker_icon[];
 	extern const uint8_t sound_icon[];
 	extern uint8_t draw_mode; // 0: AND, 1: OR, 2: XOR 
+	extern uint8_t dither;
 
 	void init();
 	inline void pulseCLK();

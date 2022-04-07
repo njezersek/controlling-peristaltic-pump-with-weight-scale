@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "scale.h"
 #include "pinout.h"
+#include "settings.h"
 
 long median_buffer[3];
 uint8_t median_buffer_index = 0;
@@ -16,10 +17,6 @@ unsigned long last_display_update = 0;
 long scale::weight = 0;
 long scale::weight_display = 0;
 long scale::filtered_raw_value = 0;
-
-long scale::offset = -537943;
-float scale::factor = .0001;
-
 
 void scale::init(){
 	pinMode(SCALE_CLK_PIN, OUTPUT);
@@ -55,12 +52,13 @@ void scale::update(){
 		filtered_raw_value += mean_buffer[i];
 	}
 
-	weight = (filtered_raw_value - offset) * factor;
+	weight = (filtered_raw_value - settings::scale_offset) * settings::scale_factor;
 
 	unsigned long now = millis();
 	if(now - last_display_update > 200){
 		last_display_update = now;
 		weight_display = weight;
+		Serial.println(weight_display);
 	}
 }
 

@@ -12,9 +12,7 @@ void main_menu::onButtonPress(){
 		selected = !selected;
 	}
 	else{
-		selected_item = 0;
-		selected = false;
-		controller::selected_menu = 1;
+		controller::openMenu(SETTINGS_MENU);
 	}
 }
 
@@ -41,6 +39,11 @@ void main_menu::onKnobRotate(int8_t direction, int8_t multiplier){
 	else{
 		selected_item = (selected_item + direction + 4) % 4;
 	}
+}
+
+void main_menu::init(){
+	main_menu::selected_item = 0;
+	main_menu::selected = false;
 }
 
 #define SETTINGS_Y 42

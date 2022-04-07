@@ -14,12 +14,14 @@ void settings_menu::onButtonPress(){
 		settings::sound = !settings::sound;
 	}
 	else if(selected_item == 3){
-		// open calibration menu
+		controller::openMenu(CALIBRATION_MENU);
 	}
 	else{
-		controller::selected_menu = 0;
-		selected_item = 0;
-		selected = false;
+		controller::openMenu(MAIN_MENU);
+
+		if(selected_item == 5){
+			settings::save();
+		}
 	}
 }
 
@@ -40,6 +42,11 @@ void settings_menu::onKnobRotate(int8_t direction, int8_t multiplier){
 		int8_t d = direction / abs(direction);
 		selected_item = (selected_item + d + 6) % 6;
 	}
+}
+
+void settings_menu::init(){
+	selected_item = 0;
+	selected = false;
 }
 
 
