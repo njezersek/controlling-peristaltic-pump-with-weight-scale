@@ -5,15 +5,18 @@
 #include "knob.h"
 #include "scale.h"
 #include "settings.h"
+#include "buzzer.h"
 
 
 void setup() {
-	pinMode(13, OUTPUT);
 	display::init();
+	settings::load(true);
 	knob::setup();
-	settings::load();
+	buzzer::init();
 
 	Serial.begin(9600);
+
+	buzzer::beep(50, 0xae);
 
 	scale::init();
 }
@@ -24,6 +27,7 @@ void loop() {
 	for(uint8_t r = 0; r < 32; r++){ // rows
 		display::setGRAMpointer(0, r);
 		knob::update();
+		buzzer::update();
 		if (scale::is_ready()) {
 			scale::update();
 		}

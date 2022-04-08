@@ -73,9 +73,9 @@ void main_menu::render(){
 	display::printBitmap(display::gram_icon, 119, 26, 7, 12, false);
 
 	// filling indicator
-	display::print("FILLING", 8, 9);
-	display::printNumber(123, 26, 17);
-	display::printChar('S', 28, 23);
+	// display::print("FILLING", 8, 9);
+	// display::printNumber(123, 26, 17);
+	// display::printChar('S', 28, 23);
 
 
 	// settings box

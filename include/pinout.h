@@ -22,3 +22,11 @@
 #define SCALE_CLK_PIN 11
 #define SCALE_DT_PIN 12
 #define SCALE_GAIN 1 // 1: 128 channel A, 2: 32 channel B, 3: 64 channel A
+
+// BUZZER
+#define BUZZER_PIN A5
+
+// PUMP INTERFACE
+#define PUMP_DIR_PIN 6
+#define PUMP_START_PIN 7
+#define PUMP_DAC_CS_PIN 4

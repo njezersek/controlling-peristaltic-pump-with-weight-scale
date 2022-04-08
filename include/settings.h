@@ -10,6 +10,6 @@ namespace settings{
 	extern long scale_offset;
 	extern float scale_factor;
 
-	void load();
+	void load(bool all);
 	void save();
 }

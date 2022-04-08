@@ -5,7 +5,7 @@
 #include "display.h"
 #include "scale.h"
 
-uint8_t controller::selected_menu = 2;
+uint8_t controller::selected_menu = MAIN_MENU;
 
 void controller::onButtonPress(){
 	if(selected_menu == 0){

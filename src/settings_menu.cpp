@@ -22,6 +22,9 @@ void settings_menu::onButtonPress(){
 		if(selected_item == 5){
 			settings::save();
 		}
+		else{
+			settings::load(false);
+		}
 	}
 }
 

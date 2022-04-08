@@ -10,12 +10,12 @@ int16_t settings::stopping_weight = 100;
 long settings::scale_offset = -537943;
 float settings::scale_factor = 0.0001;
 
-void settings::load(){
-	EEPROM.get(0, speed);
-	EEPROM.get(1, drip);
+void settings::load(bool all){
+	if(all) EEPROM.get(0, speed);
+	if(all) EEPROM.get(1, drip);
 	EEPROM.get(2, start_acceleration);
 	EEPROM.get(3, sound);
-	EEPROM.get(4, weight);
+	if(all) EEPROM.get(4, weight);
 	EEPROM.get(6, stopping_weight);
 	EEPROM.get(8, scale_offset);
 	EEPROM.get(12, scale_factor);
