@@ -7,7 +7,7 @@ DebounceInput button(BUTTON_PIN);
 unsigned long last_encoder_update = 0;
 int8_t prev_dir = 1;
 
-void knob::setup(){
+void knob::init(){
 	encoder_A.setup();
 	encoder_B.setup();
 	button.setup();

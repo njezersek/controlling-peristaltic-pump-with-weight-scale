@@ -4,6 +4,6 @@
 #include "debounce.h"
 
 namespace knob{
-	void setup();
+	void init();
 	void update();
 }

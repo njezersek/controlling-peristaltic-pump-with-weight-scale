@@ -6,19 +6,19 @@
 #include "scale.h"
 #include "settings.h"
 #include "buzzer.h"
+#include "pump.h"
 
 
 void setup() {
-	display::init();
 	settings::load(true);
-	knob::setup();
+	display::init();
+	knob::init();
 	buzzer::init();
+	pump::init();
+	scale::init();
 
 	Serial.begin(9600);
-
 	buzzer::beep(50, 0xae);
-
-	scale::init();
 }
 
 void loop() {
