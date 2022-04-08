@@ -4,28 +4,18 @@
 #include "controller.h"
 #include "knob.h"
 #include "scale.h"
+#include "settings.h"
 
 
 void setup() {
 	pinMode(13, OUTPUT);
 	display::init();
 	knob::setup();
+	settings::load();
 
 	Serial.begin(9600);
 
 	scale::init();
-
-	display::print("HELLO WORLD", 0, 0);
-	display::print("ABCDEFGHIJKLMNOPQRSTUVWZ", 0, 6);
-
-	for(uint8_t n = 0; n < 10; n++){
-		display::printNumberChar(n, n*6, 12);
-	}
-	// display::printNumber(9876, 127, 40);
-
-	display::print7Segment(9, 0, 25);
-
-	// display::horizontalLine(1, 25, 3);
 }
 
 void loop() {

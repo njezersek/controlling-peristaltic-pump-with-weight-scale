@@ -12,6 +12,9 @@ long mean_buffer[mean_n];
 uint8_t mean_buffer_index = 0;
 long mean = 0;
 
+long display_median_buffer[3];
+uint8_t display_median_buffer_index = 0;
+
 unsigned long last_display_update = 0;
 
 long scale::weight = 0;
@@ -39,9 +42,6 @@ void scale::update(){
 	else if((median_buffer[0] <= median_buffer[2] && median_buffer[2] <= median_buffer[1]) || (median_buffer[1] <= median_buffer[2] && median_buffer[2] <= median_buffer[0]) ){
 		median = median_buffer[2];
 	}
-	else{
-		median = 123;
-	}
 
 	// mean filter
 	mean_buffer[mean_buffer_index] = median;
@@ -56,8 +56,20 @@ void scale::update(){
 
 	unsigned long now = millis();
 	if(now - last_display_update > 200){
+		display_median_buffer[display_median_buffer_index] = weight;
+		display_median_buffer_index = (display_median_buffer_index + 1) % 3;
 		last_display_update = now;
-		weight_display = weight;
+
+		if((display_median_buffer[1] <= display_median_buffer[0] && display_median_buffer[0] <= display_median_buffer[2]) || (display_median_buffer[2] <= display_median_buffer[0] && display_median_buffer[0] <= display_median_buffer[1]) ){
+			weight_display = display_median_buffer[0];
+		}
+		else if((display_median_buffer[0] <= display_median_buffer[1] && display_median_buffer[1] <= display_median_buffer[2]) || (display_median_buffer[2] <= display_median_buffer[1] && display_median_buffer[1] <= display_median_buffer[0]) ){
+			weight_display = display_median_buffer[1];
+		}
+		else if((display_median_buffer[0] <= display_median_buffer[2] && display_median_buffer[2] <= display_median_buffer[1]) || (display_median_buffer[1] <= display_median_buffer[2] && display_median_buffer[2] <= display_median_buffer[0]) ){
+			weight_display = display_median_buffer[2];
+		}
+
 		Serial.println(weight_display);
 	}
 }
