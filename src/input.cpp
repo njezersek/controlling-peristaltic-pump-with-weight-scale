@@ -1,22 +1,25 @@
-#include "knob.h"
+#include "input.h"
 #include "controller.h"
 
 DebounceInput encoder_A(ENCODER_A_PIN);
 DebounceInput encoder_B(ENCODER_B_PIN);
 DebounceInput button(BUTTON_PIN);
+DebounceInput pedal(PEDAL_PIN);
 unsigned long last_encoder_update = 0;
 int8_t prev_dir = 1;
 
-void knob::init(){
+void input::init(){
 	encoder_A.setup();
 	encoder_B.setup();
 	button.setup();
+	pedal.setup();
 }
 
-void knob::update(){
+void input::update(){
 	encoder_A.update();
 	encoder_B.update();
 	button.update();
+	pedal.update();
 
 	unsigned long now = millis();
 	if(encoder_A.state && !encoder_A.last_state){
@@ -33,5 +36,9 @@ void knob::update(){
 
 	if(button.state && !button.last_state){
 		controller::onButtonPress();
+	}
+
+	if(pedal.state && !pedal.last_state){
+		controller::onPedalPress();
 	}
 }

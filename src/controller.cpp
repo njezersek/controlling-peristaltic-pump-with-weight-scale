@@ -19,6 +19,12 @@ void controller::onButtonPress(){
 	}
 }
 
+void controller::onPedalPress(){
+	if(selected_menu == 0){
+		main_menu::onPedalPress();
+	}
+}
+
 void controller::onKnobRotate(int8_t direction, int8_t multiplier){
 	if(selected_menu == 0){
 		main_menu::onKnobRotate(direction, multiplier);

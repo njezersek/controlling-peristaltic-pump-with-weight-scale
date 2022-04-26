@@ -10,6 +10,7 @@ namespace controller{
 
 	void onKnobRotate(int8_t direction, int8_t multiplier);
 	void onButtonPress();
+	void onPedalPress();
 	void render();
 	void openMenu(uint8_t menu);
 }

@@ -3,6 +3,7 @@
 #include "display.h"
 #include "scale.h"
 #include "settings.h"
+#include "pump.h"
 
 uint8_t main_menu::selected_item = 0;
 bool main_menu::selected = false;
@@ -13,6 +14,15 @@ void main_menu::onButtonPress(){
 	}
 	else{
 		controller::openMenu(SETTINGS_MENU);
+	}
+}
+
+void main_menu::onPedalPress(){
+	if(pump::running){
+		pump::stop();
+	}
+	else{
+		pump::start();
 	}
 }
 
@@ -73,9 +83,11 @@ void main_menu::render(){
 	display::printBitmap(display::gram_icon, 119, 26, 7, 12, false);
 
 	// filling indicator
-	// display::print("FILLING", 8, 9);
-	// display::printNumber(123, 26, 17);
-	// display::printChar('S', 28, 23);
+	if(pump::running){
+		display::print("FILLING", 8, 9);
+		display::printNumber((millis() - pump::start_time) / 1000, 26, 17);
+		display::printChar('S', 28, 23);
+	}
 
 
 	// settings box

@@ -2,7 +2,7 @@
 
 #include "display.h"
 #include "controller.h"
-#include "knob.h"
+#include "input.h"
 #include "scale.h"
 #include "settings.h"
 #include "buzzer.h"
@@ -12,7 +12,7 @@
 void setup() {
 	settings::load(true);
 	display::init();
-	knob::init();
+	input::init();
 	buzzer::init();
 	pump::init();
 	scale::init();
@@ -26,8 +26,9 @@ void loop() {
 	controller::render();
 	for(uint8_t r = 0; r < 32; r++){ // rows
 		display::setGRAMpointer(0, r);
-		knob::update();
+		input::update();
 		buzzer::update();
+		pump::update();
 		if (scale::is_ready()) {
 			scale::update();
 		}

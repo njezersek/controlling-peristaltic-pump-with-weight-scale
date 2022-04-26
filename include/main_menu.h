@@ -6,6 +6,7 @@ namespace main_menu{
 	
 	void onKnobRotate(int8_t direction, int8_t multiplier);
 	void onButtonPress();
+	void onPedalPress();
 	void render();
 	void init();
 }

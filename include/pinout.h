@@ -18,6 +18,9 @@
 #define BUTTON_PIN A2
 #define ENCODER_DIRECTION -1
 
+// PEDAL
+#define PEDAL_PIN 8
+
 // SCALE HX711
 #define SCALE_CLK_PIN 11
 #define SCALE_DT_PIN 12

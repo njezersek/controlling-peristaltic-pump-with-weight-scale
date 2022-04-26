@@ -3,7 +3,7 @@
 #include "pinout.h"
 #include "debounce.h"
 
-namespace knob{
+namespace input{
 	void init();
 	void update();
 }
