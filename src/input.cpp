@@ -25,7 +25,7 @@ void input::update(){
 	if(encoder_A.state && !encoder_A.last_state){
 		int8_t dir = (encoder_B.state) ? 1 : -1;
 
-		int8_t multiplier = min(max(1000 / (now - last_encoder_update), 1), 50);
+		int8_t multiplier = min(max(30 - (int)(now - last_encoder_update), 1), 20);
 		last_encoder_update = now;
 
 		if(prev_dir != dir) multiplier = 1;
