@@ -81,7 +81,6 @@ void calibration_menu::render(){
 	if(reading_state == 1){
 		empty_reading += scale::filtered_raw_value;
 		reading_count++;
-		Serial.println(empty_reading);
 		if(reading_count >= 110){
 			empty_reading /= 110;
 			reading_state = 0;
