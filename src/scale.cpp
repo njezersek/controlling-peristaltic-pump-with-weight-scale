@@ -24,8 +24,11 @@ uint8_t display_median_buffer_index = 0;
 unsigned long last_display_update = 0;
 
 long scale::weight = 0;
+long scale::weight_tare = 0;
 long scale::weight_display = 0;
+long scale::weight_display_tare = 0;
 long scale::filtered_raw_value = 0;
+long scale::tare_value = 0;
 
 void scale::init(){
 	pinMode(SCALE_CLK_PIN, OUTPUT);
@@ -78,7 +81,9 @@ void scale::update(){
 	}
 	display_mean /= display_mean_n;
 
-	uint8_t look_back = min(max(20+display_mean_n - abs(display_mean - weight)*10, 1), display_mean_n); // dynamicly set the size of rolling mean
+	const uint8_t offset = 20; // [tenth of a gram] if the error exceeds offset/10 g the size of rolling mean is reduced
+	const uint8_t k = 10; // rate of rolling mean window size reduction
+	uint8_t look_back = min(max((offset*k)+display_mean_n - abs(display_mean - weight)*k, 1), display_mean_n); // dynamicly set the size of rolling mean
 	display_mean_dynamic = 0;
 	for(uint16_t i=0; i<look_back; i++){
 		display_mean_dynamic += display_mean_buffer[(display_mean_buffer_index + i) % display_mean_n];
@@ -88,7 +93,7 @@ void scale::update(){
 	display_mean_buffer_index = (display_mean_buffer_index + 1) % display_mean_n;
 
 
-
+	// display median filter
 	unsigned long now = millis();
 	if(now - last_display_update > 200){
 		display_median_buffer[display_median_buffer_index] = (display_mean_dynamic + 5) / 10;
@@ -108,15 +113,25 @@ void scale::update(){
 
 	weight /= 10;
 
+	weight_tare = weight - tare_value;
+	weight_display_tare = weight_display - tare_value;
+
+
 	// Serial.print("w:");
 	// Serial.print(weight);
 	// Serial.print(" mw:");
 	// Serial.print(display_mean);
 	// Serial.print(" dw:");
 	// Serial.print(weight_display);
-	// Serial.print(" look_back:");
-	// Serial.print(look_back);
-	// Serial.println();
+	Serial.print(" look_back:");
+	Serial.print(look_back);
+	Serial.println();
+}
+
+void scale::tare(){
+	tare_value = weight_display;
+	weight_tare = weight - tare_value;
+	weight_display_tare = weight_display - tare_value;
 }
 
 bool scale::is_ready(){

@@ -66,14 +66,14 @@ void main_menu::render(){
 	display::draw_mode = 2;
 
 	// weight display
-	long w = abs(scale::weight_display);
+	long w = abs(scale::weight_display_tare);
 	uint8_t i;
 	for(i=0; i<4; i++){
 		display::print7Segment(w % 10, 43+19*(3-i), 3);
 		w /= 10;
 		if(w == 0) break;
 	}
-	if(scale::weight_display < 0){
+	if(scale::weight_display_tare < 0){
 		display::horizontalLine(43+19*(3-i)-10, 17, 7);
 		display::horizontalLine(43+19*(3-i)-11, 18, 9);
 		display::horizontalLine(43+19*(3-i)-10, 19, 7);
@@ -83,9 +83,19 @@ void main_menu::render(){
 	display::printBitmap(display::gram_icon, 119, 26, 7, 12, false);
 
 	// filling indicator
-	if(pump::running){
-		display::print("FILLING", 8, 9);
-		display::printNumber((millis() - pump::start_time) / 1000, 26, 17);
+	if(millis() - pump::stop_time < 6000){
+		if(pump::running){
+			display::print("FILLING", 8, 9);
+		}
+		else{
+			display::print("DONE", 8, 9);
+		}
+		unsigned long delta = (pump::stop_time - pump::start_time) / 10;
+		display::printNumber(delta % 100, 26, 17);
+		if(delta % 100 < 10) display::printNumberChar(0, 26-6-5, 17);
+		display::printNumber(delta / 100, 26-14, 17);
+		display::horizontalLine(27-14, 17+3, 1);
+		display::horizontalLine(27-14, 17+6, 1);
 		display::printChar('S', 28, 23);
 	}
 

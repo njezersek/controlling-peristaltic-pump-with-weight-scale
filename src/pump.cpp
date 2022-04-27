@@ -4,9 +4,11 @@
 #include "scale.h"
 #include "settings.h"
 #include "pinout.h"
+#include "buzzer.h"
 
 bool pump::running = false;
 unsigned long pump::start_time = 0;
+unsigned long pump::stop_time = 0;
 
 float ramp_up = 0;
 uint16_t pump_speed = 0;
@@ -23,21 +25,24 @@ void pump::init(){
 
 void pump::update(){
 	// read the scale
-	float weight = scale::weight;
+	float weight = scale::weight_tare;
 
 	if(running){ // filling state
+		stop_time = millis();
 
-		if(millis() - start_time > 100){ // increase speed after 100ms
-			ramp_up += 0.01;
-			if(ramp_up > 1) ramp_up = 1;
-			float f = ramp_up - max(0, max(0, weight-settings::weight+settings::stopping_weight)/settings::stopping_weight);
-			// float f = ramp_up - (weight/(float)TARGET_WEIGHT);
-			if(f < 0) f = 0;
-			if(f > 1) f = 1;
-			pump_speed = f * settings::speed * 40;
+		ramp_up += (float)settings::start_acceleration / 100.f;
+		if(ramp_up > 1) ramp_up = 1;
+		float f = ramp_up - max(0, max(0, weight-settings::weight+settings::stopping_weight)/settings::stopping_weight);
+		// float f = ramp_up - (weight/(float)TARGET_WEIGHT);
+		if(f < 0) f = 0;
+		if(f > 1) f = 1;
+		pump_speed = f * settings::speed * 40;
+		if(millis() - start_time > 20){ // start pump after 100ms
+			digitalWrite(PUMP_START_PIN, HIGH);
 		}
 
 		if(weight >= settings::weight - settings::drip){
+			buzzer::beep(50, 0b11111111);
 			stop();
 		}
 
@@ -61,12 +66,13 @@ void pump::setDirection(bool direction){
 }
 
 void pump::start(){
-	digitalWrite(PUMP_START_PIN, HIGH);
+	scale::tare();
 	running = true;
 	start_time = millis();
 }
 
 void pump::stop(){
 	digitalWrite(PUMP_START_PIN, LOW);
+	pump_speed = 0;
 	running = false;
 }

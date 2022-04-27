@@ -6,6 +6,7 @@
 namespace pump{
 	extern bool running;
 	extern unsigned long start_time;
+	extern unsigned long stop_time;
 	void init();
 	void update();
 
