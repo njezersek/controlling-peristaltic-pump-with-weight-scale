@@ -83,9 +83,9 @@ void main_menu::render(){
 	display::printBitmap(display::gram_icon, 119, 26, 7, 12, false);
 
 	// filling indicator
-	if(millis() - pump::stop_time < 6000){
+	if(millis() - pump::stop_time < 6000 && pump::stop_time > 0){
 		if(pump::running){
-			display::print("FILLING", 8, 9);
+			display::print("FILLING", 2, 9);
 		}
 		else{
 			display::print("DONE", 8, 9);
